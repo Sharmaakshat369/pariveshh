@@ -7,6 +7,7 @@ const authMiddleware = require("../middleware/authMiddleware");
 const roleMiddleware = require("../middleware/roleMiddleware");
 
 const {
+  createStaffUser,
   getAllUsers,
   deleteUser,
   updateUser
@@ -29,6 +30,7 @@ const {
 router.use(authMiddleware, roleMiddleware("ADMIN"));
 
 /* USER MANAGEMENT */
+router.post("/users/staff", createStaffUser);
 router.get("/users", getAllUsers);
 router.put("/users/:id", updateUser);
 router.delete("/users/:id", deleteUser);

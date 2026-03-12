@@ -2,6 +2,8 @@
 
 const User = require("../models/User");
 
+const allowedStaffRoles = ["STATE_REVIEWER", "CENTRAL_REVIEWER"];
+
 exports.getUserDashboard = async (req, res) => {
   try {
     const user = await User.findById(req.user._id).select("-password");
@@ -21,6 +23,66 @@ exports.getUserDashboard = async (req, res) => {
     res.status(500).json({
       success: false,
       message: "Failed to fetch dashboard",
+      error: error.message,
+    });
+  }
+};
+
+exports.createStaffUser = async (req, res) => {
+  try {
+    const { name, email, password, role, state, phone, organization } = req.body;
+
+    if (!name || !email || !password || !role) {
+      return res.status(400).json({
+        success: false,
+        message: "name, email, password and role are required",
+      });
+    }
+
+    if (!allowedStaffRoles.includes(role)) {
+      return res.status(400).json({
+        success: false,
+        message: "Only STATE_REVIEWER or CENTRAL_REVIEWER can be created here",
+      });
+    }
+
+    if (role === "STATE_REVIEWER" && !state) {
+      return res.status(400).json({
+        success: false,
+        message: "State is required for STATE_REVIEWER",
+      });
+    }
+
+    const existingUser = await User.findOne({ email });
+
+    if (existingUser) {
+      return res.status(400).json({
+        success: false,
+        message: "User already exists",
+      });
+    }
+
+    const user = await User.create({
+      name,
+      email,
+      password,
+      role,
+      state: role === "STATE_REVIEWER" ? state : null,
+      phone,
+      organization,
+    });
+
+    const safeUser = user.toObject();
+    delete safeUser.password;
+
+    res.status(201).json({
+      success: true,
+      user: safeUser,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Failed to create staff user",
       error: error.message,
     });
   }

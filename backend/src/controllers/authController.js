@@ -5,7 +5,7 @@ const env = require("../config/env");
 
 exports.register = async (req, res) => {
   try {
-    const { name, email, password, role, state, phone, organization } = req.body;
+    const { name, email, password, state, phone, organization } = req.body;
 
     const existingUser = await User.findOne({ email });
 
@@ -20,11 +20,14 @@ exports.register = async (req, res) => {
       name,
       email,
       password,
-      role,
+      role: "APPLICANT",
       state,
       phone,
       organization,
     });
+
+    const safeUser = user.toObject();
+    delete safeUser.password;
 
     const token = jwt.sign({ id: user._id }, env.JWT_SECRET, {
       expiresIn: env.JWT_EXPIRE,
@@ -33,7 +36,7 @@ exports.register = async (req, res) => {
     res.status(201).json({
       success: true,
       token,
-      user,
+      user: safeUser,
     });
   } catch (error) {
     res.status(500).json({
@@ -73,10 +76,13 @@ exports.login = async (req, res) => {
     user.lastLogin = new Date();
     await user.save();
 
+    const safeUser = user.toObject();
+    delete safeUser.password;
+
     res.status(200).json({
       success: true,
       token,
-      user,
+      user: safeUser,
     });
   } catch (error) {
     res.status(500).json({
