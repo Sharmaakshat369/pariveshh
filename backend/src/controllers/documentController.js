@@ -1,6 +1,7 @@
 const fs = require("fs");
 const path = require("path");
 const Document = require("../models/Document");
+const Application = require("../models/Application");
 
 // Upload document
 exports.uploadDocument = async (req, res) => {
@@ -14,6 +15,11 @@ exports.uploadDocument = async (req, res) => {
       fileSize: req.file.size,
       fileType: req.file.mimetype,
     });
+
+    await Application.findByIdAndUpdate(
+      req.body.applicationId,
+      { $push: { documents: document._id } }
+    );
 
     res.status(201).json({
       success: true,
@@ -152,6 +158,11 @@ exports.deleteDocument = async (req, res) => {
         message: "Document not found",
       });
     }
+
+    await Application.findByIdAndUpdate(
+      document.application,
+      { $pull: { documents: document._id } }
+    );
 
     res.status(200).json({
       success: true,
