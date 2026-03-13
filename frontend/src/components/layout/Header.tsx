@@ -1,8 +1,8 @@
 import { motion } from 'framer-motion';
 import { Landmark, Bell, LogIn, UserPlus, Menu, X } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
-import { useState } from 'react';
-import { tickerMessages } from '@/data/mockData';
+import { useEffect, useState } from 'react';
+import { getDefaultPublicContent, fetchPublicContent } from '@/lib/publicContent';
 
 const navLinks = [
   { label: 'Home', path: '/' },
@@ -15,6 +15,20 @@ const navLinks = [
 export default function Header() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const location = useLocation();
+  const [tickerMessages, setTickerMessages] = useState<string[]>(getDefaultPublicContent().homeTopUpdates);
+
+  useEffect(() => {
+    const loadContent = async () => {
+      try {
+        const content = await fetchPublicContent();
+        setTickerMessages(content.homeTopUpdates);
+      } catch {
+        setTickerMessages(getDefaultPublicContent().homeTopUpdates);
+      }
+    };
+
+    void loadContent();
+  }, []);
 
   return (
     <header className="sticky top-0 z-50 w-full bg-surface shadow-soft">

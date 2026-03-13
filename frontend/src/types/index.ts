@@ -63,6 +63,34 @@ export interface Manual {
   downloadUrl: string;
 }
 
+export interface PublicManual {
+  title: string;
+  description: string;
+  category: string;
+  fileSize: string;
+  downloadUrl: string;
+}
+
+export interface PublicClearanceForm {
+  name: string;
+  desc: string;
+  seq: string;
+  docUrl: string;
+  pdfUrl: string;
+}
+
+export interface PublicClearanceCategory {
+  category: 'Environment' | 'Forest' | 'Wildlife' | 'CRZ';
+  forms: PublicClearanceForm[];
+}
+
+export interface PublicContent {
+  homeTopUpdates: string[];
+  manuals: PublicManual[];
+  clearanceSidebarLinks: string[];
+  clearances: PublicClearanceCategory[];
+}
+
 export interface Notification {
   id: string;
   title: string;

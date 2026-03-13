@@ -17,6 +17,7 @@ const reportRoutes = require("./src/routes/reportRoutes");
 const sectorRoutes = require("./src/routes/sectorRoutes");
 const templateRoutes = require("./src/routes/templateRoutes");
 const adminRoutes = require("./src/routes/adminRoutes");
+const publicContentRoutes = require("./src/routes/publicContentRoutes");
 
 const app = express();
 
@@ -40,6 +41,7 @@ app.use("/api/reports", reportRoutes);
 app.use("/api/sectors", sectorRoutes);
 app.use("/api/templates", templateRoutes);
 app.use("/api/admin", adminRoutes);
+app.use("/api/public-content", publicContentRoutes);
 
 app.get("/", (req, res) => {
   res.json({ message: "PARIVESH Backend API Running 🚀" });

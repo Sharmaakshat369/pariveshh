@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { Landmark, BarChart3, Users, FileText, Settings, LogOut, Shield, Activity, Menu, UserCog } from 'lucide-react';
+import { Landmark, BarChart3, Users, FileText, Settings, LogOut, Shield, Activity, Menu, UserCog, Megaphone } from 'lucide-react';
 import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
@@ -11,6 +11,7 @@ const adminLinks = [
   { icon: UserCog, label: 'Employee Mgmt', path: '/admin/employees' },
   { icon: Shield, label: 'Reports', path: '/admin/reports' },
   { icon: Activity, label: 'System Logs', path: '/admin/logs' },
+  { icon: Megaphone, label: 'Public Content', path: '/admin/content' },
   { icon: Settings, label: 'Settings', path: '/admin/settings' },
 ];
 

@@ -44,6 +44,7 @@ import AdminDashboard from "@/pages/admin/AdminDashboard";
 import AdminApplications from "@/pages/admin/AdminApplications";
 import UserManagement from "@/pages/admin/UserManagement";
 import SystemLogs from "@/pages/admin/SystemLogs";
+import PublicContentManagement from "@/pages/admin/PublicContentManagement";
 
 const queryClient = new QueryClient();
 
@@ -119,6 +120,7 @@ const App = () => (
                 <Route path="employees" element={<ComingSoon label="Employee Management" />} />
                 <Route path="reports" element={<ComingSoon label="Admin Reports" />} />
                 <Route path="logs" element={<SystemLogs />} />
+                <Route path="content" element={<PublicContentManagement />} />
                 <Route path="settings" element={<Settings />} />
               </Route>
             </Route>

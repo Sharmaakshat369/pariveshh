@@ -1,44 +1,38 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Home, ChevronRight, FileText, FileDown } from 'lucide-react';
 import { Link } from 'react-router-dom';
-
-const sidebarLinks = [
-  'Overview',
-  'Know Your Approving Authority(KYAA)',
-  'Know Your Process Flow',
-  'Know Your Application Forms',
-  'Agenda & MoM',
-  'Notifications & Orders',
-];
-
-const categories = ['Environment', 'Forest', 'Wildlife', 'CRZ'];
-
-// Mock data to show something different for each category
-const formData = {
-  Environment: [
-    { name: 'Fresh Proposal Form (Env)', desc: 'Fresh Proposal Form for Environment clearance', seq: 'CAF + Fresh Proposal Form (Env)' },
-    { name: 'Amendment Proposal Form', desc: 'Amendment Proposal Form', seq: 'CAF + Amendment Proposal Form' },
-  ],
-  Forest: [
-    { name: 'Forest Diversion Form', desc: 'Form for forest land diversion', seq: 'CAF + Forest Diversion' },
-    { name: 'Tree Cutting Form', desc: 'Form for tree felling permission', seq: 'CAF + Tree Felling' },
-  ],
-  Wildlife: [
-    { name: 'Wildlife Clearance Form', desc: 'Form for wildlife protected areas', seq: 'CAF + Wildlife Clearance' },
-  ],
-  CRZ: [
-    { name: 'Fresh Proposal Form (New)', desc: 'Fresh Proposal Form of CRZ clearance', seq: 'CAF + Fresh Proposal Form (New)' },
-    { name: 'Amendment Proposal Form', desc: 'Amendment Proposal Form', seq: 'CAF + Amendment Proposal Form' },
-    { name: 'CRZ Validity Extension', desc: 'CRZ Validity Extension', seq: 'CAF + CRZ Validity Extension' },
-    { name: 'Transfer of CRZ Clearance', desc: 'Transfer of CRZ Clearance', seq: 'CAF + Transfer of CRZ Clearance' },
-  ],
-};
+import type { PublicClearanceCategory } from '@/types';
+import { fetchPublicContent, getDefaultPublicContent } from '@/lib/publicContent';
 
 export default function Clearances() {
+  const defaultContent = getDefaultPublicContent();
+  const [sidebarLinks, setSidebarLinks] = useState<string[]>(defaultContent.clearanceSidebarLinks);
+  const [clearanceCategories, setClearanceCategories] = useState<PublicClearanceCategory[]>(defaultContent.clearances);
   const [activeSidebar, setActiveSidebar] = useState('Know Your Application Forms');
   const [activeCategory, setActiveCategory] = useState('CRZ');
 
-  const currentForms = formData[activeCategory as keyof typeof formData] || [];
+  useEffect(() => {
+    const loadClearanceContent = async () => {
+      try {
+        const content = await fetchPublicContent();
+        setSidebarLinks(content.clearanceSidebarLinks);
+        setClearanceCategories(content.clearances);
+
+        if (content.clearances.length > 0) {
+          setActiveCategory(content.clearances[0].category);
+        }
+      } catch {
+        setSidebarLinks(defaultContent.clearanceSidebarLinks);
+        setClearanceCategories(defaultContent.clearances);
+      }
+    };
+
+    void loadClearanceContent();
+  }, []);
+
+  const categories = clearanceCategories.map((category) => category.category);
+  const selectedCategory = clearanceCategories.find((category) => category.category === activeCategory);
+  const currentForms = selectedCategory?.forms || [];
 
   return (
     <div className="min-h-screen bg-stone-50/50 flex flex-col font-sans">
@@ -116,15 +110,14 @@ export default function Clearances() {
                           <td className="px-6 py-4 text-foreground/80">{item.name}</td>
                           <td className="px-4 py-4">
                             <div className="flex items-center justify-center gap-2">
-                              {/* Fake document icons */}
-                              <button className="text-blue-500 hover:text-blue-700 hover:scale-110 transition-transform flex flex-col items-center group" title="Download DOC">
+                              <a href={item.docUrl || '#'} target="_blank" rel="noreferrer" className="text-blue-500 hover:text-blue-700 hover:scale-110 transition-transform flex flex-col items-center group" title="Download DOC">
                                 <FileText size={18} />
                                 <span className="text-[9px] font-bold group-hover:underline">DOC</span>
-                              </button>
-                              <button className="text-red-500 hover:text-red-700 hover:scale-110 transition-transform flex flex-col items-center group" title="Download PDF">
+                              </a>
+                              <a href={item.pdfUrl || '#'} target="_blank" rel="noreferrer" className="text-red-500 hover:text-red-700 hover:scale-110 transition-transform flex flex-col items-center group" title="Download PDF">
                                 <FileDown size={18} />
                                 <span className="text-[9px] font-bold group-hover:underline">PDF</span>
-                              </button>
+                              </a>
                             </div>
                           </td>
                           <td className="px-6 py-4 text-foreground/70">{item.desc}</td>
