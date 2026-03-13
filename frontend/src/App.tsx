@@ -19,6 +19,8 @@ import Register from "@/pages/Register";
 import Manuals from "@/pages/Manuals";
 import Helpdesk from "@/pages/Helpdesk";
 import NotFound from "@/pages/NotFound";
+import About from "@/pages/About";
+import Clearances from "@/pages/Clearances";
 
 // Applicant pages
 import ApplicantDashboard from "@/pages/applicant/ApplicantDashboard";
@@ -26,6 +28,7 @@ import SubmitProposal from "@/pages/SubmitProposal";
 import Applications from "@/pages/Applications";
 import Notifications from "@/pages/Notifications";
 import Settings from "@/pages/Settings";
+import ApplicationDetails from "@/pages/ApplicationDetails";
 
 // State Reviewer pages
 import StateDashboard from "@/pages/state/StateDashboard";
@@ -59,6 +62,8 @@ const App = () => (
             {/* Public */}
             <Route element={<PublicLayout />}>
               <Route path="/" element={<Home />} />
+              <Route path="/about" element={<About />} />
+              <Route path="/clearances" element={<Clearances />} />
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
               <Route path="/manuals" element={<Manuals />} />
@@ -83,6 +88,7 @@ const App = () => (
                 <Route index element={<StateDashboard />} />
                 <Route path="review" element={<ReviewApplications />} />
                 <Route path="applications" element={<ReviewApplications />} />
+                <Route path="applications/:id" element={<ApplicationDetails />} />
                 <Route path="reports" element={<ComingSoon label="State Reports" />} />
                 <Route path="notifications" element={<Notifications />} />
                 <Route path="settings" element={<Settings />} />
@@ -95,6 +101,8 @@ const App = () => (
                 <Route index element={<CentralDashboard />} />
                 <Route path="applications" element={<AllApplications />} />
                 <Route path="committee" element={<CommitteeReview />} />
+                <Route path="applications/:id" element={<ApplicationDetails />} />
+                <Route path="committee/:id" element={<ApplicationDetails />} />
                 <Route path="reports" element={<ComingSoon label="Central Reports" />} />
                 <Route path="notifications" element={<Notifications />} />
                 <Route path="settings" element={<Settings />} />
@@ -106,6 +114,7 @@ const App = () => (
               <Route path="/admin" element={<AdminLayout />}>
                 <Route index element={<AdminDashboard />} />
                 <Route path="applications" element={<AdminApplications />} />
+                <Route path="applications/:id" element={<ApplicationDetails />} />
                 <Route path="users" element={<UserManagement />} />
                 <Route path="employees" element={<ComingSoon label="Employee Management" />} />
                 <Route path="reports" element={<ComingSoon label="Admin Reports" />} />
